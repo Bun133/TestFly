@@ -15,7 +15,7 @@ fun JavaPlugin.getAssertionManager(setting: AssertSetting = AssertSetting()): As
     }
 }
 
-fun <T> JavaPlugin.assert(name: String, expected: T) {
+fun <T> JavaPlugin.assert(name: String, expected: T): Assertion<T> {
     return Assertion(name, expected, getAssertionManager())
 }
 
