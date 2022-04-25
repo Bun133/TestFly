@@ -15,8 +15,8 @@ fun JavaPlugin.getAssertionManager(setting: AssertSetting = AssertSetting()): As
     }
 }
 
-fun <T> JavaPlugin.assert(name: String, expected: T, f: () -> T) {
-    return Assertion(name, expected, getAssertionManager()).assert(f)
+fun <T> JavaPlugin.assert(name: String, expected: T) {
+    return Assertion(name, expected, getAssertionManager())
 }
 
 fun JavaPlugin.reportToString(stream: PrintStream) {
