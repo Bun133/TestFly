@@ -1,6 +1,9 @@
 package com.github.bun133.testfly.assertion
 
-class Assertion<T>(val name: String, var expected: T, manager: AssertionManager) {
+/**
+ * @property isOverWriteResult falseならば、結果を上書きせず、失敗したらそのまま失敗した状態を保つ
+ */
+class Assertion<T>(val name: String, var expected: T, val isOverWriteResult: Boolean, manager: AssertionManager) {
     init {
         manager.add(this)
     }
@@ -12,7 +15,16 @@ class Assertion<T>(val name: String, var expected: T, manager: AssertionManager)
         private set
 
     fun assert(f: () -> T) {
-        val actual = f()
+        if (isOverWriteResult) {
+            applyState(f())
+        } else {
+            if (state != AssertionState.Failed) {
+                applyState(f())
+            }
+        }
+    }
+
+    private fun applyState(actual: T) {
         lastValue = actual
         state = if (actual == expected) {
             AssertionState.Passed

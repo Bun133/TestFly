@@ -15,8 +15,8 @@ fun JavaPlugin.getAssertionManager(setting: AssertSetting = AssertSetting()): As
     }
 }
 
-fun <T> JavaPlugin.assert(name: String, expected: T): Assertion<T> {
-    return Assertion(name, expected, getAssertionManager())
+fun <T> JavaPlugin.assert(name: String, expected: T, isOverWriteResult: Boolean = false): Assertion<T> {
+    return Assertion(name, expected, isOverWriteResult, getAssertionManager())
 }
 
 fun JavaPlugin.reportToString(stream: PrintStream) {
