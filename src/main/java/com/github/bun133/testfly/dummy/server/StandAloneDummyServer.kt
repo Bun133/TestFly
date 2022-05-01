@@ -1,31 +1,22 @@
 package com.github.bun133.testfly.dummy.server
 
-import java.io.File
+import com.github.bun133.testfly.dummy.server.utils.ServerUtils
 import java.lang.reflect.Method
-import java.net.URLClassLoader
 
-class JARDummyServer(private val jarFile: File) : DummyServer {
+class StandAloneDummyServer(private val util: ServerUtils) : DummyServer {
     lateinit var getServerMethod: Method
     lateinit var shutdownMethod: Method
 
-    val urlClassLoader = URLClassLoader(arrayOf(jarFile.toURI().toURL()), this.javaClass.classLoader)
 
     override fun getServer(): org.bukkit.Server {
-        // TODO Fix NoClassDefFoundError
         return getServerMethod.invoke(null) as org.bukkit.Server
     }
 
     override fun startServer(option: DummyServerOption) {
-        if (!jarFile.exists()) {
-            throw IllegalStateException("jar file not found")
-        } else if (!jarFile.isFile) {
-            throw IllegalStateException("jar file is not a file")
-        }
-
-        val toLoadClazz = Class.forName("org.bukkit.craftbukkit.Main", true, urlClassLoader)
+        val toLoadClazz = util.classForName("org.bukkit.craftbukkit.Main")
         val mainMethod = toLoadClazz.getDeclaredMethod("main", Array<String>::class.java)
         mainMethod.invoke(null, arrayOf(option.toStringParameter()))
-        val serverClazz = Class.forName("org.bukkit.Bukkit", true, urlClassLoader)
+        val serverClazz = util.classForName("org.bukkit.Bukkit")
         getServerMethod = serverClazz.getDeclaredMethod("getServer")
         shutdownMethod = serverClazz.getDeclaredMethod("shutdown")
 
@@ -33,7 +24,7 @@ class JARDummyServer(private val jarFile: File) : DummyServer {
 
         waitForServer()
 
-        println("[TestFly]Server started")
+        println("[TestFly]StandAlone Server started")
     }
 
     private fun waitForServer() {
