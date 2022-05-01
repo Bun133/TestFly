@@ -5,6 +5,6 @@ data class DummyServerOption(
     val isNoGui: Boolean = false
 ) {
     fun toStringParameter(): String {
-        return "-port $port ${if (isNoGui) "-nogui" else ""}"
+        return "-port=$port${if (isNoGui) " -nogui" else ""}"
     }
 }
