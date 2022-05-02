@@ -6,4 +6,9 @@ interface DummyServer {
     fun getServer(): Server
     fun startServer(option: DummyServerOption)
     fun stopServer(isForce: Boolean)
+
+    /**
+     * return true when server is not running
+     */
+    fun isDead(): Boolean
 }

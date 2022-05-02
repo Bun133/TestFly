@@ -1,6 +1,7 @@
 package com.github.bun133.testfly.dummy.server
 
 import com.github.bun133.testfly.dummy.server.utils.ServerUtils
+import com.github.bun133.testfly.util.waitForSingle
 import java.lang.reflect.Method
 
 class StandAloneDummyServer(private val util: ServerUtils) : DummyServer {
@@ -22,22 +23,24 @@ class StandAloneDummyServer(private val util: ServerUtils) : DummyServer {
 
         Thread.sleep(1000)
 
-        waitForServer()
+        waitForServerStartUp()
 
         println("[TestFly]StandAlone Server started")
     }
 
-    private fun waitForServer() {
-        while (true) {
-            if (getServerMethod.invoke(null) != null) {
-                break
-            } else {
-                Thread.sleep(10)
-            }
-        }
+    private fun waitForServerStartUp() {
+        waitForSingle("Timings Reset", 10)
+        println("OUT")
     }
 
+
+    private var isStopped = false
     override fun stopServer(isForce: Boolean) {
         shutdownMethod.invoke(null)
+        isStopped = true
+    }
+
+    override fun isDead(): Boolean {
+        return isStopped
     }
 }

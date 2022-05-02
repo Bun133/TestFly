@@ -13,6 +13,7 @@ class ConnectedServer(val settings: ConnectedServerOptions) : DummyServer {
     val urlClassLoader = URLClassLoader(arrayOf(settings.jarFile.toURI().toURL()), this.javaClass.classLoader)
 
     init {
+        Thread.currentThread().contextClassLoader = urlClassLoader
         loadAllBukkitClasses()
     }
 
@@ -102,6 +103,8 @@ class ConnectedServer(val settings: ConnectedServerOptions) : DummyServer {
             standAloneServer = StandAloneDummyServer(utils)
             standAloneServer!!.startServer(option)
         }
+
+        features = ServerFeatures(utils)
     }
 
     override fun stopServer(isForce: Boolean) {
@@ -112,6 +115,10 @@ class ConnectedServer(val settings: ConnectedServerOptions) : DummyServer {
                 .getDeclaredMethod("shutdown")
                 .invoke(null)
         }
+    }
+
+    override fun isDead(): Boolean {
+        return Thread.getAllStackTraces().toList().find { it.first.name == "Server thread" } == null
     }
 
     lateinit var features: ServerFeatures
