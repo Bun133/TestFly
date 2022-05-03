@@ -10,6 +10,8 @@ class PlayerSpawnFaker(val utils: ServerUtils) {
     fun fakePlayerSpawn(prof: FakePlayerProfile): Player {
         val en = generateEntity(prof)
         // TODO Send PlayerJoinEvent
+        val bb = this.javaClass.classLoader === ClassLoader.getSystemClassLoader()
+        val b = this.javaClass.classLoader === utils.server.urlClassLoader
         return entityPlayerClazz.getMethod("getBukkitEntity").invoke(en) as Player
     }
 
@@ -19,8 +21,8 @@ class PlayerSpawnFaker(val utils: ServerUtils) {
     private fun generateEntity(prof: FakePlayerProfile): Any {
         val server = utils.getMinecraftServer()
         val worldServer = utils.vanillaServerClass
-                .getMethod("getWorldServer", utils.overWorld().javaClass)
-                .invoke(server, utils.overWorld())
+            .getMethod("getWorldServer", utils.overWorld().javaClass)
+            .invoke(server, utils.overWorld())
         val profile = gameProfile(prof)
         val interactManager =
             utils.classForNameUnderMinecraftServer("PlayerInteractManager").constructors[0].newInstance(worldServer)

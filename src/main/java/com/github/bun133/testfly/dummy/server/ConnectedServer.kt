@@ -10,10 +10,12 @@ import java.net.URLClassLoader
 class ConnectedServer(val settings: ConnectedServerOptions) : DummyServer {
     val utils: ServerUtils = ServerUtils(this)
 
-    val urlClassLoader = URLClassLoader(arrayOf(settings.jarFile.toURI().toURL()), this.javaClass.classLoader)
+    val urlClassLoader = run {
+        val urls = settings.jarFile.toURI().toURL()
+        URLClassLoader(arrayOf(urls))
+    }
 
     init {
-        Thread.currentThread().contextClassLoader = urlClassLoader
         loadAllBukkitClasses()
     }
 
@@ -104,7 +106,26 @@ class ConnectedServer(val settings: ConnectedServerOptions) : DummyServer {
             standAloneServer!!.startServer(option)
         }
 
+        waitForServerStartUp(1000, 10)
+
         features = ServerFeatures(utils)
+    }
+
+    private fun waitForServerStartUp(firstWaitTime: Long, waitTime: Long) {
+        val server = utils.getMinecraftServer()
+        val tpsArr = utils.classForNameUnderMinecraftServer("MinecraftServer").getDeclaredField("recentTps")
+
+        Thread.sleep(firstWaitTime)
+
+        while (true) {
+            val arr = tpsArr.get(server) as DoubleArray
+            if (arr.any { it > 0.0 }) {
+                break
+            }
+            Thread.sleep(waitTime)
+        }
+
+        println("[TestFly] Server started")
     }
 
     override fun stopServer(isForce: Boolean) {
