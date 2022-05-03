@@ -25,12 +25,17 @@ class ConnectedServerTest {
 
     fun testAll() {
         checkServerPackage()
+        getServerTest()
         fakePlayerJoin()
         waitForServerShutdown()
     }
 
     fun checkServerPackage() {
         assert(server.utils.serverClassPackagePath() == "net.minecraft.server.v1_16_R3")
+    }
+
+    fun getServerTest() {
+        server.getServer()
     }
 
     fun fakePlayerJoin() {

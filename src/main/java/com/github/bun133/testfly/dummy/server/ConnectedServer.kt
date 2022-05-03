@@ -12,11 +12,11 @@ class ConnectedServer(val settings: ConnectedServerOptions) : DummyServer {
 
     val urlClassLoader = run {
         val urls = settings.jarFile.toURI().toURL()
-        URLClassLoader(arrayOf(urls))
+        URLClassLoader(arrayOf(urls), this::class.java.classLoader)
     }
 
     init {
-        loadAllBukkitClasses()
+//        loadAllBukkitClasses()
     }
 
     val isStandAlone = run {
@@ -33,19 +33,19 @@ class ConnectedServer(val settings: ConnectedServerOptions) : DummyServer {
 
     private fun getClassNullable(name: String): Class<*>? {
         return try {
-            Class.forName(name)
+            Class.forName(name, true, urlClassLoader)
         } catch (e: ClassNotFoundException) {
             null
         }
     }
 
     private fun loadAllBukkitClasses() {
-        tryPreloadClass("com.destroystokyo.paper.util.SneakyThrow")
-        tryPreloadClass("com.google.common.collect.Iterators\$PeekingImpl")
-        tryPreloadClass("com.google.common.collect.MapMakerInternalMap\$Values")
-        tryPreloadClass("com.google.common.collect.MapMakerInternalMap\$ValueIterator")
-        tryPreloadClass("com.google.common.collect.MapMakerInternalMap\$WriteThroughEntry")
-        tryPreloadClass("com.google.common.collect.Iterables")
+//        tryPreloadClass("com.destroystokyo.paper.util.SneakyThrow")
+//        tryPreloadClass("com.google.common.collect.Iterators\$PeekingImpl")
+//        tryPreloadClass("com.google.common.collect.MapMakerInternalMap\$Values")
+//        tryPreloadClass("com.google.common.collect.MapMakerInternalMap\$ValueIterator")
+//        tryPreloadClass("com.google.common.collect.MapMakerInternalMap\$WriteThroughEntry")
+//        tryPreloadClass("com.google.common.collect.Iterables")
 
         for (i in 1..15) {
             tryPreloadClass("com.google.common.collect.Iterables$$i")
@@ -56,8 +56,8 @@ class ConnectedServer(val settings: ConnectedServerOptions) : DummyServer {
         tryPreloadClass("org.jline.terminal.impl.MouseSupport")
         tryPreloadClass("org.jline.terminal.impl.MouseSupport$1")
         tryPreloadClass("org.jline.terminal.Terminal\$MouseTracking")
-        tryPreloadClass("co.aikar.timings.TimingHistory")
-        tryPreloadClass("co.aikar.timings.TimingHistory\$MinuteReport")
+//        tryPreloadClass("co.aikar.timings.TimingHistory")
+//        tryPreloadClass("co.aikar.timings.TimingHistory\$MinuteReport")
         tryPreloadClass("io.netty.channel.AbstractChannelHandlerContext")
         tryPreloadClass("io.netty.channel.AbstractChannelHandlerContext$11")
         tryPreloadClass("io.netty.channel.AbstractChannelHandlerContext$12")
@@ -75,8 +75,8 @@ class ConnectedServer(val settings: ConnectedServerOptions) : DummyServer {
         tryPreloadClass("org.slf4j.helpers.FormattingTuple")
         tryPreloadClass("org.slf4j.helpers.BasicMarker")
         tryPreloadClass("org.slf4j.helpers.Util")
-        tryPreloadClass("com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent")
-        tryPreloadClass("com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent")
+//        tryPreloadClass("com.destroystokyo.paper.event.player.PlayerConnectionCloseEvent")
+//        tryPreloadClass("com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent")
         tryPreloadClass("net.minecraft.server.v1_16_R3.LightEngineLayerEventListener")
         tryPreloadClass("net.minecraft.server.v1_16_R3.LightEngineLayerEventListener.Void")
         tryPreloadClass("net.minecraft.server.v1_16_R3.ExceptionSuppressor")

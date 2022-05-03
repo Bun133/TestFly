@@ -10,8 +10,6 @@ class PlayerSpawnFaker(val utils: ServerUtils) {
     fun fakePlayerSpawn(prof: FakePlayerProfile): Player {
         val en = generateEntity(prof)
         // TODO Send PlayerJoinEvent
-        val bb = this.javaClass.classLoader === ClassLoader.getSystemClassLoader()
-        val b = this.javaClass.classLoader === utils.server.urlClassLoader
         return entityPlayerClazz.getMethod("getBukkitEntity").invoke(en) as Player
     }
 

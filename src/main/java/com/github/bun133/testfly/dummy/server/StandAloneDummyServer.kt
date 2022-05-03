@@ -2,14 +2,15 @@ package com.github.bun133.testfly.dummy.server
 
 import com.github.bun133.testfly.dummy.server.utils.ServerUtils
 import java.lang.reflect.Method
+import org.bukkit.Server
 
 class StandAloneDummyServer(private val util: ServerUtils) : DummyServer {
     lateinit var getServerMethod: Method
     lateinit var shutdownMethod: Method
 
 
-    override fun getServer(): org.bukkit.Server {
-        return getServerMethod.invoke(null) as org.bukkit.Server
+    override fun getServer(): Server {
+        return getServerMethod.invoke(null) as Server
     }
 
     override fun startServer(option: DummyServerOption) {
